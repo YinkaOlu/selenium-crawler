@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sample.Controller">
+   <children>
+        <Label GridPane.rowIndex="0" GridPane.columnIndex="0">Hero Name</Label>
+       <TextField GridPane.rowIndex="1" GridPane.columnIndex="0" fx:id="heroUniverse"/>
+
+      <Label GridPane.rowIndex="2" GridPane.columnIndex="0">Hero Name</Label>
+      <TextField GridPane.rowIndex="3" GridPane.columnIndex="0" fx:id="heroName"/>
+
+      <Button mnemonicParsing="false" onAction="#startBrowser" text="Start Search" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+
+   </children>
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+</GridPane>
