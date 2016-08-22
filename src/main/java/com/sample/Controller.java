@@ -16,6 +16,6 @@ public class Controller {
         String heroString = heroName.getText() + " " +heroUniverse.getText();
         System.out.println(heroString);
         Browser browser = new Browser();
-        browser.startDriver(heroString);
+        browser.startDriver(heroName.getText(), heroUniverse.getText());
     }
 }
