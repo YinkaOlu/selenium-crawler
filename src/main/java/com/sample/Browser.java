@@ -1,11 +1,22 @@
 package com.sample;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,23 +35,61 @@ public class Browser {
         driver = new ChromeDriver();
     }
 
-    public void startDriver(String heroName, String heroUniverse) {
-        searchHero(heroName+" "+heroUniverse);
+    public void startDriver(String heroName, String hero_status, String comic_universe, String gender) {
+        String[] nameSplit = heroName.split("\\(");
+//        System.out.println(nameSplit[0]);
+        searchHero(heroName);
 
         System.out.println("Starting Infobox");
         HashMap<String, String> hero = new HashMap<String, String>();
+        hero.put("heroStatus", hero_status);
+        hero.put("universe", comic_universe);
+        hero.put("gender", gender);
+        hero.put("heroName", nameSplit[0]);
         try{
             WebElement heroTable = driver.findElement(By.className("infobox"));
             getTableElements(heroTable, hero);
             hero = getHeroSummary(hero);
-            for(Map.Entry<String, String> element: hero.entrySet()){
-                System.out.println(element.getKey() +"\n"+element.getValue()+"\n\n");
-            }
+            postHeroRequest(hero);
 
         }catch (java.lang.RuntimeException re){
             System.out.println("No Table Found");
             driver.close();
         }
+    }
+
+    private void postHeroRequest(HashMap<String, String> hero) {
+        System.out.println("Posting Hero Request");
+        HttpClient httpclient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost("http://localhost:3000/api/newCharacter");
+
+        // Request parameters and other properties.
+        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+        for(Map.Entry<String, String> entry : hero.entrySet()){
+            System.out.println("-------------");
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
+            System.out.println("-------------");
+            if(entry.getKey() != null && entry.getValue() != null){
+                params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            }
+        }
+        try {
+            httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        HttpResponse response = null;
+        try {
+            driver.close();
+            response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private HashMap<String, String> getHeroSummary(HashMap<String, String> hero) {
